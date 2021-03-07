@@ -2,5 +2,6 @@
 
 
 s01e02 - Basic example to set the background colour blue.
+s01e03 - Modification of previous code to set the background colour on every scanline based on it's current index.
 
 
