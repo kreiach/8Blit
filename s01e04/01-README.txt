@@ -1,0 +1,1 @@
+This code will cycle through the PF registers drawing one at a time in normal mode and then again in mirrored.
