@@ -1,0 +1,338 @@
+------- FILE 8blit-s01e05-Ex3-Playfield-Box.asm LEVEL 1 PASS 2
+      1  10000					       processor	6502	; -----------------------------------------------------
+      2  10000 ????						; S0E5 Ex4. Draw the playfield on an Atari 2600
+------- FILE vcs.h LEVEL 2 PASS 2
+      0  10000 ????				       include	"vcs.h"	; This example uses the TIA PF0, PF1, PF2, and CTLRPF 
+      1  10000 ????						; VCS.H
+      2  10000 ????						; Version 1.06, 06/SEP/2020
+      3  10000 ????
+      4  10000 ????		00 6a	    VERSION_VCS =	106
+      5  10000 ????
+      6  10000 ????						; THIS IS *THE* "STANDARD" VCS.H
+      7  10000 ????						; THIS FILE IS EXPLICITLY SUPPORTED AS A DASM-PREFERRED COMPANION FILE
+      8  10000 ????						; The latest version can be found at https://dasm-assembler.github.io/
+      9  10000 ????						;
+     10  10000 ????						; This file defines hardware registers and memory mapping for the
+     11  10000 ????						; Atari 2600. It is distributed as a companion machine-specific support package
+     12  10000 ????						; for the DASM compiler. Updates to this file, DASM, and associated tools are
+     13  10000 ????						; available at at https://dasm-assembler.github.io/
+     14  10000 ????						;
+     15  10000 ????						; Many thanks to the people who have contributed. If you find an issue with the
+     16  10000 ????						; contents, or would like ot add something, please report as an issue at...
+     17  10000 ????						; https://github.com/dasm-assembler/dasm/issues
+     18  10000 ????
+     19  10000 ????						;
+     20  10000 ????						; Latest Revisions...
+     21  10000 ????						; 1.06  05/SEP/2020	 Modified header/license and links to new versions
+     22  10000 ????						; 1.05  13/NOV/2003	  - Correction to 1.04 - now functions as requested by MR.
+     23  10000 ????						;			  - Added VERSION_VCS equate (which will reflect 100x version #)
+     24  10000 ????						;			    This will allow conditional code to verify VCS.H being
+     25  10000 ????						;			    used for code assembly.
+     26  10000 ????						; 1.04  12/NOV/2003	 Added TIA_BASE_WRITE_ADDRESS and TIA_BASE_READ_ADDRESS for
+     27  10000 ????						;			 convenient disassembly/reassembly compatibility for hardware
+     28  10000 ????						;			 mirrored reading/writing differences.	This is more a 
+     29  10000 ????						;			 readability issue, and binary compatibility with disassembled
+     30  10000 ????						;			 and reassembled sources.  Per Manuel Rotschkar's suggestion.
+     31  10000 ????						; 1.03  12/MAY/2003	 Added SEG segment at end of file to fix old-code compatibility
+     32  10000 ????						;			 which was broken by the use of segments in this file, as
+     33  10000 ????						;			 reported by Manuel Polik on [stella] 11/MAY/2003
+     34  10000 ????						; 1.02  22/MAR/2003	 Added TIMINT($285)
+     35  10000 ????						; 1.01				Constant offset added to allow use for 3F-style bankswitching
+     36  10000 ????						;						 - define TIA_BASE_ADDRESS as $40 for Tigervision carts, otherwise
+     37  10000 ????						;						   it is safe to leave it undefined, and the base address will
+     38  10000 ????						;						   be set to 0.  Thanks to Eckhard Stolberg for the suggestion.
+     39  10000 ????						;			    Note, may use -DLABEL=EXPRESSION to define TIA_BASE_ADDRESS
+     40  10000 ????						;			  - register definitions are now generated through assignment
+     41  10000 ????						;			    in uninitialised segments.	This allows a changeable base
+     42  10000 ????						;			    address architecture.
+     43  10000 ????						; 1.0	22/MAR/2003		Initial release
+     44  10000 ????
+     45  10000 ????
+     46  10000 ????						;-------------------------------------------------------------------------------
+     47  10000 ????
+     48  10000 ????						; TIA_BASE_ADDRESS
+     49  10000 ????						; The TIA_BASE_ADDRESS defines the base address of access to TIA registers.
+     50  10000 ????						; Normally 0, the base address should (externally, before including this file)
+     51  10000 ????						; be set to $40 when creating 3F-bankswitched (and other?) cartridges.
+     52  10000 ????						; The reason is that this bankswitching scheme treats any access to locations
+     53  10000 ????						; < $40 as a bankswitch.
+     54  10000 ????
+     55  10000 ????			   -	       IFNCONST	TIA_BASE_ADDRESS
+     56  10000 ????			   -TIA_BASE_ADDRESS =	0
+     57  10000 ????				       ENDIF
+     58  10000 ????
+     59  10000 ????						; Note: The address may be defined on the command-line using the -D switch, eg:
+     60  10000 ????						; dasm.exe code.asm -DTIA_BASE_ADDRESS=$40 -f3 -v5 -ocode.bin
+     61  10000 ????						; *OR* by declaring the label before including this file, eg:
+     62  10000 ????						; TIA_BASE_ADDRESS = $40
+     63  10000 ????						;   include "vcs.h"
+     64  10000 ????
+     65  10000 ????						; Alternate read/write address capability - allows for some disassembly compatibility
+     66  10000 ????						; usage ; to allow reassembly to binary perfect copies).  This is essentially catering
+     67  10000 ????						; for the mirrored ROM hardware registers.
+     68  10000 ????
+     69  10000 ????						; Usage: As per above, define the TIA_BASE_READ_ADDRESS and/or TIA_BASE_WRITE_ADDRESS
+     70  10000 ????						; using the -D command-line switch, as required.  If the addresses are not defined, 
+     71  10000 ????						; they defaut to the TIA_BASE_ADDRESS.
+     72  10000 ????
+     73  10000 ????			   -	       IFNCONST	TIA_BASE_READ_ADDRESS
+     74  10000 ????			   -TIA_BASE_READ_ADDRESS =	TIA_BASE_ADDRESS
+     75  10000 ????				       ENDIF
+     76  10000 ????
+     77  10000 ????			   -	       IFNCONST	TIA_BASE_WRITE_ADDRESS
+     78  10000 ????			   -TIA_BASE_WRITE_ADDRESS =	TIA_BASE_ADDRESS
+     79  10000 ????				       ENDIF
+     80  10000 ????
+     81  10000 ????						;-------------------------------------------------------------------------------
+     82  10000 ????
+     83 U002d ????				      SEG.U	TIA_REGISTERS_WRITE
+     84 U0000					      ORG	TIA_BASE_WRITE_ADDRESS
+     85 U0000
+     86 U0000							; DO NOT CHANGE THE RELATIVE ORDERING OF REGISTERS!
+     87 U0000
+     88 U0000		       00	   VSYNC      ds	1	; $00	 0000 00x0   Vertical Sync Set-Clear
+     89 U0001		       00	   VBLANK     ds	1	; $01	 xx00 00x0   Vertical Blank Set-Clear
+     90 U0002		       00	   WSYNC      ds	1	; $02	 ---- ----   Wait for Horizontal Blank
+     91 U0003		       00	   RSYNC      ds	1	; $03	 ---- ----   Reset Horizontal Sync Counter
+     92 U0004		       00	   NUSIZ0     ds	1	; $04	 00xx 0xxx   Number-Size player/missle 0
+     93 U0005		       00	   NUSIZ1     ds	1	; $05	 00xx 0xxx   Number-Size player/missle 1
+     94 U0006		       00	   COLUP0     ds	1	; $06	 xxxx xxx0   Color-Luminance Player 0
+     95 U0007		       00	   COLUP1     ds	1	; $07	 xxxx xxx0   Color-Luminance Player 1
+     96 U0008		       00	   COLUPF     ds	1	; $08	 xxxx xxx0   Color-Luminance Playfield
+     97 U0009		       00	   COLUBK     ds	1	; $09	 xxxx xxx0   Color-Luminance Background
+     98 U000a		       00	   CTRLPF     ds	1	; $0A	 00xx 0xxx   Control Playfield, Ball, Collisions
+     99 U000b		       00	   REFP0      ds	1	; $0B	 0000 x000   Reflection Player 0
+    100 U000c		       00	   REFP1      ds	1	; $0C	 0000 x000   Reflection Player 1
+    101 U000d		       00	   PF0	      ds	1	; $0D	 xxxx 0000   Playfield Register Byte 0
+    102 U000e		       00	   PF1	      ds	1	; $0E	 xxxx xxxx   Playfield Register Byte 1
+    103 U000f		       00	   PF2	      ds	1	; $0F	 xxxx xxxx   Playfield Register Byte 2
+    104 U0010		       00	   RESP0      ds	1	; $10	 ---- ----   Reset Player 0
+    105 U0011		       00	   RESP1      ds	1	; $11	 ---- ----   Reset Player 1
+    106 U0012		       00	   RESM0      ds	1	; $12	 ---- ----   Reset Missle 0
+    107 U0013		       00	   RESM1      ds	1	; $13	 ---- ----   Reset Missle 1
+    108 U0014		       00	   RESBL      ds	1	; $14	 ---- ----   Reset Ball
+    109 U0015		       00	   AUDC0      ds	1	; $15	 0000 xxxx   Audio Control 0
+    110 U0016		       00	   AUDC1      ds	1	; $16	 0000 xxxx   Audio Control 1
+    111 U0017		       00	   AUDF0      ds	1	; $17	 000x xxxx   Audio Frequency 0
+    112 U0018		       00	   AUDF1      ds	1	; $18	 000x xxxx   Audio Frequency 1
+    113 U0019		       00	   AUDV0      ds	1	; $19	 0000 xxxx   Audio Volume 0
+    114 U001a		       00	   AUDV1      ds	1	; $1A	 0000 xxxx   Audio Volume 1
+    115 U001b		       00	   GRP0       ds	1	; $1B	 xxxx xxxx   Graphics Register Player 0
+    116 U001c		       00	   GRP1       ds	1	; $1C	 xxxx xxxx   Graphics Register Player 1
+    117 U001d		       00	   ENAM0      ds	1	; $1D	 0000 00x0   Graphics Enable Missle 0
+    118 U001e		       00	   ENAM1      ds	1	; $1E	 0000 00x0   Graphics Enable Missle 1
+    119 U001f		       00	   ENABL      ds	1	; $1F	 0000 00x0   Graphics Enable Ball
+    120 U0020		       00	   HMP0       ds	1	; $20	 xxxx 0000   Horizontal Motion Player 0
+    121 U0021		       00	   HMP1       ds	1	; $21	 xxxx 0000   Horizontal Motion Player 1
+    122 U0022		       00	   HMM0       ds	1	; $22	 xxxx 0000   Horizontal Motion Missle 0
+    123 U0023		       00	   HMM1       ds	1	; $23	 xxxx 0000   Horizontal Motion Missle 1
+    124 U0024		       00	   HMBL       ds	1	; $24	 xxxx 0000   Horizontal Motion Ball
+    125 U0025		       00	   VDELP0     ds	1	; $25	 0000 000x   Vertical Delay Player 0
+    126 U0026		       00	   VDELP1     ds	1	; $26	 0000 000x   Vertical Delay Player 1
+    127 U0027		       00	   VDELBL     ds	1	; $27	 0000 000x   Vertical Delay Ball
+    128 U0028		       00	   RESMP0     ds	1	; $28	 0000 00x0   Reset Missle 0 to Player 0
+    129 U0029		       00	   RESMP1     ds	1	; $29	 0000 00x0   Reset Missle 1 to Player 1
+    130 U002a		       00	   HMOVE      ds	1	; $2A	 ---- ----   Apply Horizontal Motion
+    131 U002b		       00	   HMCLR      ds	1	; $2B	 ---- ----   Clear Horizontal Move Registers
+    132 U002c		       00	   CXCLR      ds	1	; $2C	 ---- ----   Clear Collision Latches
+    133 U002d
+    134 U002d							;-------------------------------------------------------------------------------
+    135 U002d
+    136 U000e ????				      SEG.U	TIA_REGISTERS_READ
+    137 U0000					      ORG	TIA_BASE_READ_ADDRESS
+    138 U0000
+    139 U0000							;											bit 7	 bit 6
+    140 U0000		       00	   CXM0P      ds	1	; $00	     xx00 0000	     Read Collision  M0-P1   M0-P0
+    141 U0001		       00	   CXM1P      ds	1	; $01	     xx00 0000			     M1-P0   M1-P1
+    142 U0002		       00	   CXP0FB     ds	1	; $02	     xx00 0000			     P0-PF   P0-BL
+    143 U0003		       00	   CXP1FB     ds	1	; $03	     xx00 0000			     P1-PF   P1-BL
+    144 U0004		       00	   CXM0FB     ds	1	; $04	     xx00 0000			     M0-PF   M0-BL
+    145 U0005		       00	   CXM1FB     ds	1	; $05	     xx00 0000			     M1-PF   M1-BL
+    146 U0006		       00	   CXBLPF     ds	1	; $06	     x000 0000			     BL-PF   -----
+    147 U0007		       00	   CXPPMM     ds	1	; $07	     xx00 0000			     P0-P1   M0-M1
+    148 U0008		       00	   INPT0      ds	1	; $08	     x000 0000	     Read Pot Port 0
+    149 U0009		       00	   INPT1      ds	1	; $09	     x000 0000	     Read Pot Port 1
+    150 U000a		       00	   INPT2      ds	1	; $0A	     x000 0000	     Read Pot Port 2
+    151 U000b		       00	   INPT3      ds	1	; $0B	     x000 0000	     Read Pot Port 3
+    152 U000c		       00	   INPT4      ds	1	; $0C		x000 0000	 Read Input (Trigger) 0
+    153 U000d		       00	   INPT5      ds	1	; $0D		x000 0000	 Read Input (Trigger) 1
+    154 U000e
+    155 U000e							;-------------------------------------------------------------------------------
+    156 U000e
+    157 U0298 ????				      SEG.U	RIOT
+    158 U0280					      ORG	$280
+    159 U0280
+    160 U0280							; RIOT MEMORY MAP
+    161 U0280
+    162 U0280		       00	   SWCHA      ds	1	; $280      Port A data register for joysticks:
+    163 U0281							;			Bits 4-7 for player 1.  Bits 0-3 for player 2.
+    164 U0281
+    165 U0281		       00	   SWACNT     ds	1	; $281      Port A data direction register (DDR)
+    166 U0282		       00	   SWCHB      ds	1	; $282		Port B data (console switches)
+    167 U0283		       00	   SWBCNT     ds	1	; $283      Port B DDR
+    168 U0284		       00	   INTIM      ds	1	; $284		Timer output
+    169 U0285
+    170 U0285		       00	   TIMINT     ds	1	; $285
+    171 U0286
+    172 U0286							; Unused/undefined registers ($285-$294)
+    173 U0286
+    174 U0286		       00		      ds	1	; $286
+    175 U0287		       00		      ds	1	; $287
+    176 U0288		       00		      ds	1	; $288
+    177 U0289		       00		      ds	1	; $289
+    178 U028a		       00		      ds	1	; $28A
+    179 U028b		       00		      ds	1	; $28B
+    180 U028c		       00		      ds	1	; $28C
+    181 U028d		       00		      ds	1	; $28D
+    182 U028e		       00		      ds	1	; $28E
+    183 U028f		       00		      ds	1	; $28F
+    184 U0290		       00		      ds	1	; $290
+    185 U0291		       00		      ds	1	; $291
+    186 U0292		       00		      ds	1	; $292
+    187 U0293		       00		      ds	1	; $293
+    188 U0294
+    189 U0294		       00	   TIM1T      ds	1	; $294		set 1 clock interval
+    190 U0295		       00	   TIM8T      ds	1	; $295      set 8 clock interval
+    191 U0296		       00	   TIM64T     ds	1	; $296      set 64 clock interval
+    192 U0297		       00	   T1024T     ds	1	; $297      set 1024 clock interval
+    193 U0298
+    194 U0298							;-------------------------------------------------------------------------------
+    195 U0298							; The following required for back-compatibility with code which does not use
+    196 U0298							; segments.
+    197 U0298
+    198  0000 ????				      SEG
+    199  0000 ????
+    200  0000 ????						; EOF
+------- FILE 8blit-s01e05-Ex3-Playfield-Box.asm
+      4  0000 ????						; Registers to draw a border around the screen. We're setting VBLANK on and off right before 
+      5  0000 ????						; and right after drawing the screen. This leave the portion of the screen that would not 
+      6  0000 ????						; display on most CRT empty, giving our border an even thickness all around when running in Stella.
+      7  0000 ????						;
+      8  0000 ????						; Subscribe to 8Blit to join in.
+      9  0000 ????						; https://www.youtube.com/channel/UCpon_anEIMQ-pPLDskYsSvQ
+     10  0000 ????
+     11  0000 ????	       00 9a	   BORDERCOLOR equ	#$9A	; We're using Two color mode for the playfield by setting D1 so this bordercolor wont even be used
+     12  0000 ????	       00 1e	   PLAYER0COLOR equ	#$1E	; Left side of the screen
+     13  0000 ????	       00 ba	   PLAYER1COLOR equ	#$BA	; Right side of the screen
+     14  0000 ????	       00 08	   BORDERHEIGHT equ	#8	; How many scan lines are our top and bottom borders
+     15  0000 ????	       00 92	   BACKGROUNDCOLOR equ	#$92
+     16  0000 ????
+     17  0000 ????						; ------------------------- Start of main segment ---------------------------------
+     18  0000 ????
+     19  10000 ????				       seg	main
+     20  f000					      org	$F000
+     21  f000
+     22  f000							; ------------------------- Start of program execution ----------------------------
+     23  f000
+     24  f000		       a2 00	   reset      ldx	#0	; Clear RAM and all TIA registers
+     25  f002		       a9 00		      lda	#0
+     26  f004
+     27  f004		       95 00	   clear      sta	0,x	; $0 to $7F (0-127) reserved OS page zero, $80 to $FF (128-255) user zero page ram.
+     28  f006		       e8		      inx
+     29  f007		       d0 fb		      bne	clear
+     30  f009
+     31  f009		       a9 1e		      lda	#PLAYER0COLOR
+     32  f00b		       85 06		      sta	COLUP0
+     33  f00d
+     34  f00d		       a9 ba		      lda	#PLAYER1COLOR
+     35  f00f		       85 07		      sta	COLUP1
+     36  f011
+     37  f011		       a9 03		      lda	#%00000011	; Set D0 to reflect the playfield, and D1 for Two color
+     38  f013		       85 0a		      sta	CTRLPF	; Apply to the CTRLPF register
+     39  f015
+     40  f015		       a9 9a		      lda	#BORDERCOLOR
+     41  f017		       85 08		      sta	COLUPF	; Set the PF color
+     42  f019
+     43  f019		       a9 92		      lda	#BACKGROUNDCOLOR
+     44  f01b		       85 09		      sta	COLUBK
+     45  f01d
+     46  f01d							; --------------------------- Begin main loop -------------------------------------
+     47  f01d
+     48  f01d				   startframe		; ------- 76543210 ---------- Bit order
+     49  f01d		       a9 02		      lda	#%00000010	; Writing a bit into the D1 vsync latch
+     50  f01f		       85 00		      sta	VSYNC
+     51  f021
+     52  f021							; --------------------------- 3 scanlines of VSYNC signal
+     53  f021		       85 02		      sta	WSYNC
+     54  f023		       85 02		      sta	WSYNC
+     55  f025		       85 02		      sta	WSYNC
+     56  f027
+     57  f027							; --------------------------- Turn off VSYNC		 
+     58  f027		       a9 00		      lda	#0
+     59  f029		       85 00		      sta	VSYNC
+     60  f02b
+     61  f02b							; -------------------------- Additional 37 scanlines of vertical blank ------------
+     62  f02b
+     63  f02b
+     64  f02b		       a9 ff		      lda	#%11111111	; Solid line of pixels
+     65  f02d		       85 0d		      sta	PF0	; Set them in all the PF# registers
+     66  f02f		       85 0e		      sta	PF1
+     67  f031		       85 0f		      sta	PF2
+     68  f033
+     69  f033		       a2 00		      ldx	#0
+     70  f035		       a9 00		      lda	#0
+     71  f037		       85 02	   lvblank    sta	WSYNC
+     72  f039		       e8		      inx
+     73  f03a		       e0 25		      cpx	#37	; 37 scanlines of vertical blank
+     74  f03c		       d0 f9		      bne	lvblank
+     75  f03e
+     76  f03e		       a9 00		      lda	#0	; Start of new frame
+     77  f040		       85 01		      sta	VBLANK	; Start of vertical blank processing
+     78  f042
+     79  f042							; --------------------------- 192 lines of drawfield ------------------------------
+     80  f042
+     81  f042		       a2 00		      ldx	#0
+     82  f044		       e0 08	   drawfield  cpx	#BORDERHEIGHT
+     83  f046		       f0 12		      beq	borderwalls
+     84  f048
+     85  f048		       e0 b8		      cpx	#192-BORDERHEIGHT	; will be interpreted by the assembler
+     86  f04a		       f0 03		      beq	borderbottom
+     87  f04c
+     88  f04c		       4c 64 f0 	      jmp	borderdone
+     89  f04f
+     90  f04f		       a9 ff	   borderbottom lda	#%11111111	; Solid row of pixels for all PF# registers
+     91  f051		       85 0d		      sta	PF0
+     92  f053		       85 0e		      sta	PF1
+     93  f055		       85 0f		      sta	PF2
+     94  f057
+     95  f057		       4c 64 f0 	      jmp	borderdone
+     96  f05a
+     97  f05a		       a9 10	   borderwalls lda	#%00010000	; Set the first pixel of PF0. Uses the 4 hight bits and rendered in reverse.
+     98  f05c		       85 0d		      sta	PF0	; Set PF0 register
+     99  f05e		       a9 00		      lda	#%00000000	; Clear the PF1-2 registers to have an empty middle
+    100  f060		       85 0e		      sta	PF1
+    101  f062		       85 0f		      sta	PF2
+    102  f064
+    103  f064		       85 02	   borderdone sta	WSYNC
+    104  f066		       e8		      inx
+    105  f067		       e0 c0		      cpx	#192
+    106  f069		       d0 d9		      bne	drawfield
+    107  f06b
+    108  f06b							; --------------------------- End of screen - enter blanking ----------------------
+    109  f06b
+    110  f06b							; ------- 76543210 ---------- Bit order
+    111  f06b		       a9 42		      lda	#%01000010	; Set D0, D6 of vblank register
+    112  f06d		       85 01		      sta	VBLANK
+    113  f06f
+    114  f06f							; -------------------------- 30 scanlines of overscan -----------------------------
+    115  f06f
+    116  f06f		       a2 00		      ldx	#0
+    117  f071		       85 02	   overscan   sta	WSYNC
+    118  f073		       e8		      inx
+    119  f074		       e0 1e		      cpx	#30
+    120  f076		       d0 f9		      bne	overscan
+    121  f078
+    122  f078							; --------------------------- End of overscan -------------------------------------
+    123  f078
+    124  f078		       4c 1d f0 	      jmp	startframe	; jump back up to start the next frame
+    125  f07b
+    126  f07b							; --------------------------- Pad until end of main segment -----------------------
+    127  f07b
+    128  fffa					      org	$FFFA
+    129  fffa
+    130  fffa				   irqvectors
+    131  fffa		       00 f0		      .word.w	reset	; NMI
+    132  fffc		       00 f0		      .word.w	reset	; RESET
+    133  fffe		       00 f0		      .word.w	reset	; IRQ
+    134  10000
+    135  10000							; -------------------------- End of main segment ----------------------------------
