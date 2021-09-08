@@ -9,7 +9,7 @@
 											; boarder would look the same all around. For this, we're not even going to use VBLANK.
 											;
 											; Subscribe to 8Blit to join in.
-											; https://www.youtube.com/channel/UCpon_anEIMQ-pPLDskYsSvQ
+											; https://www.youtube.com/8blit
 
 BORDERCOLOR			equ 	#$9A
 BORDERHEIGHT			equ	#8						; How many scan lines are our top and bottom borders

@@ -5,7 +5,7 @@
 											; first in normal mode, and then in mirrored
 											;
 											; Subscribe to 8Blit to join in.
-											; https://www.youtube.com/channel/UCpon_anEIMQ-pPLDskYsSvQ
+											; https://www.youtube.com/8blit
 
 PF0COL 			equ		#$38		
 PF1COL	 		equ		#$B8		 

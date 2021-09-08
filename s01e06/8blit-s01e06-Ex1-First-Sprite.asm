@@ -6,7 +6,7 @@
 											;
 											;
 											; Subscribe to 8Blit to join in.
-											; https://www.youtube.com/channel/UCpon_anEIMQ-pPLDskYsSvQ
+											; https://www.youtube.com/8blit
 
 
 BKCOLOR			equ 	#$9A				; Background colour (blue)

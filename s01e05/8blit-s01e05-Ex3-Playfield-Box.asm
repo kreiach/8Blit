@@ -6,7 +6,7 @@
 											; display on most CRT empty, giving our border an even thickness all around when running in Stella.
 											;
 											; Subscribe to 8Blit to join in.
-											; https://www.youtube.com/channel/UCpon_anEIMQ-pPLDskYsSvQ
+											; https://www.youtube.com/8blit
 
 BORDERCOLOR			equ 	#$9A						; We're using Two color mode for the playfield by setting D1 so this bordercolor wont even be used
 PLAYER0COLOR    		equ	#$1E						; Left side of the screen

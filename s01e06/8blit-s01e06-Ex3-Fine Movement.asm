@@ -12,7 +12,7 @@
 											; Some snippets from examples by Andrew Davie
 											;
 											; Subscribe to 8Blit to join in.
-											; https://www.youtube.com/channel/UCpon_anEIMQ-pPLDskYsSvQ
+											; https://www.youtube.com/8blit
 
 MAX_HPOS        equ 	#213				; while there are 160 color clocks in the visible portion of the screen
 MIN_HPOS        equ 	#33					; anything draw during HSYNC is positioned at color clock 4 so let's move

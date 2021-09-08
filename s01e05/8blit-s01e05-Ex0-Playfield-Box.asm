@@ -5,7 +5,7 @@
                                             								; generally recommending number of VBLANK's
 											;
 											; Subscribe to 8Blit to join in.
-											; https://www.youtube.com/channel/UCpon_anEIMQ-pPLDskYsSvQ
+											; https://www.youtube.com/8blit
 
 PFCOLOR 			equ 	#$A2
 
