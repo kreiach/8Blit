@@ -74,4 +74,3 @@ InterruptVectors
 	.word Reset          ; RESET
 	.word Reset          ; IRQ
 
-END
