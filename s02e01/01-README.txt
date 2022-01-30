@@ -1,1 +1,1 @@
-1 example of basic sprite animation 
+5 examples of basic sprite animation 
