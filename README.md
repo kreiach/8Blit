@@ -9,8 +9,8 @@ s01e06 - Drawing Graphics with the Player Graphics registers\
 s01e07 - Four examples to demostrate how to draw a graphics and move it around the screen.\
 s01e08 - One example to demostrate how to use a sprite editor with Atari Dev Studio\
 s02e01 - Five examples of basic sprite animation\
-s02e02 - Reading input from the CX-40 Joystick and the console switches
-s02e03 - How to set and read timers
-Specials-01 - Demonstrates an asysmmetrical playfield
+s02e02 - Reading input from the CX-40 Joystick and the console switches\
+s02e03 - How to set and read timers\
+Specials-01 - Demonstrates an asysmmetrical playfield\
 
 
