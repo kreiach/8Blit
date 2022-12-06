@@ -1,0 +1,1 @@
+How to detect collisions between the ball graphic object and the playfield. Uses the 'bounce' technique from the game COMBAT! from 1977.
