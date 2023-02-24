@@ -1,0 +1,1 @@
+Demonstrates the technique for generating random numbers and uses it to randomly select the start location of the ball graphic object and which playfield to use. Also features the use of a Linear-Feedback Shift Register like the one used to create the Pitfall world in a single byte.
