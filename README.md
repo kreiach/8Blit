@@ -13,6 +13,8 @@ s02e02 - Reading input from the CX-40 Joystick and the console switches\
 s02e03 - How to set and read timers\
 s02e04 - How to build your own multi-scanline kernel for your game\
 s02e05 - How to detect collisions between the ball graphic object and the playfield. Uses the 'bounce' technique from the game COMBAT! from 1977.\
-Specials-01 - Demonstrates an asysmmetrical playfield\
+s03e01 - Random Numbers and Linear-Feedback Shift Register
+Specials01 - Demonstrates an asymmetrical playfield\
+Specials03 - Christmas Yule Log with animated asymmetrical playfield\
 
 

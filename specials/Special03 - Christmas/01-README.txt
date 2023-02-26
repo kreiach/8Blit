@@ -1,1 +1,0 @@
-8Blit Christmas Yule Log Fire

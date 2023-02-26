@@ -1,1 +1,0 @@
-This code will change the background colour for each scanline, based the the current scan line index.

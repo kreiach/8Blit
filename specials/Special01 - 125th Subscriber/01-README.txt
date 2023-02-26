@@ -1,1 +1,0 @@
-125th Subscriber special demonstrating an asymmetrical playfield
