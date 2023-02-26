@@ -1,11 +1,11 @@
 # ATARI VCS/2600 Programming Tutorials
 \
-Become a Patron - https://patreon.com/8blit\
-Subscribe to 8Blit - https://www.youtube.com/8blit\
-Follow on Facebook - https://www.facebook.com/8Blit\
-Follow on Instagram - https://www.instagram.com/8blit\
-Tweet on Twitter - https://twitter.com/8blit0\
-Visit the Website - https://www.8blit.com\
+Become a Patron - https://patreon.com/8blit \
+Subscribe to 8Blit - https://www.youtube.com/8blit \
+Follow on Facebook - https://www.facebook.com/8Blit \
+Follow on Instagram - https://www.instagram.com/8blit \
+Tweet on Twitter - https://twitter.com/8blit0 \
+Visit the Website - https://www.8blit.com \
 \
 Email - 8blit0@gmail.com\
 \
