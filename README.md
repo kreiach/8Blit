@@ -4,7 +4,6 @@ Become a Patron - https://patreon.com/8blit \
 Subscribe to 8Blit - https://www.youtube.com/8blit \
 Follow on Facebook - https://www.facebook.com/8Blit \
 Follow on Instagram - https://www.instagram.com/8blit \
-Tweet on Twitter - https://twitter.com/8blit0 \
 Visit the Website - https://www.8blit.com \
 \
 Email - 8blit0@gmail.com\
@@ -23,6 +22,8 @@ s02e04 - How to build your own multi-scanline kernel for your game\
 s02e05 - collision detection between the ball and playfield. Uses the 'bounce' technique from the game COMBAT!\
 s03e01 - Random Numbers and Linear-Feedback Shift Register\
 s03e02 - How to add sound effects to your game\
+s03e03 - No example code
+s03e04 - Programming for Different World Regions on the Atari 2600\
 Specials01 - Demonstrates an asymmetrical playfield\
 Specials03 - Christmas Yule Log with animated asymmetrical playfield
 
