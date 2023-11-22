@@ -79,7 +79,7 @@ overscan:
 	inx
 	cpx #30                             ; compare the value in (x) to the immeadiate value of 30
 	bne overscan                        ; branch up to the 'overscan' label the compare is not equal
-	jmp startOfFrame                    ; frame is completed, branch back up to the 'startOfFrame' label
+	jmp startFrame                    ; frame is completed, branch back up to the 'startFrame' label
 ;------------------------------------------------
 
 	org $fffa                           ; set origin to last 6 bytes of 4k rom
