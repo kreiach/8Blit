@@ -1,7 +1,8 @@
 # ATARI VCS/2600 Programming
 \
 Become a Patron - https://patreon.com/8blit \
-Subscribe to 8Blit - https://www.youtube.com/8blit \
+8blit Merch - https://8blit.myspreadshop.com \
+Subscribe to 8Blit - https://www.youtube.com/8blit?sub_confirmation=1 \
 Follow on Facebook - https://www.facebook.com/8Blit \
 Follow on Instagram - https://www.instagram.com/8blit \
 Visit the Website - https://www.8blit.com \
