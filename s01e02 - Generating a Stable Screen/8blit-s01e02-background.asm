@@ -1,90 +1,91 @@
-				processor 6502				; s01e02 Generating a stable screen
-				include	 "vcs.h"			; This example uses the TIA PF0, PF1, PF2, and CTLRPF 
-											; Registers to draw playfield graphics using one register at a time
-											; first in normal mode, and then in mirrored
-	                                        ;
-    	                                    ; This Episode on Youtube - https://youtu.be/WcRtIpvjKNI
-        	                                ;
-            	                            ; Become a Patron - https://patreon.com/8blit
-                	                        ; Subscribe to 8Blit - https://www.youtube.com/8blit
-                    	                    ; Follow on Facebook - https://www.facebook.com/8Blit
-                        	                ; Follow on Instagram - https://www.instagram.com/8blit
-                            	            ; Tweet on Twitter - https://twitter.com/8blit0
-                                	        ; Visit the Website - https://www.8blit.com 
-                                    	    ;
-                                        	; Email - 8blit0@gmail.com
+; S01E02 Generating a stable screen
 
-BLUE         = $9A
-	
-;------------------------------------------------------------------------------
-	SEG
-	ORG $F000
-	
-Reset
-; Clear RAM and all TIA registers
-	ldx #0 
-	lda #0 
-Clear           
-	sta 0,x 
-	inx 
-	bne Clear
-;------------------------------------------------
-; Once-only initialization. . .
-	lda #BLUE
-	sta COLUBK             ; set the background color
-;------------------------------------------------
+; This example creates the proper VSYNC, and number of scanlines to generate a stable frame on NTSC televisions.
 
-StartOfFrame
-; Start of new frame
-; Start of vertical blank processing
-	lda #0
-	sta VBLANK
-	lda #2
-	sta VSYNC
+; This Episode on Youtube - https://youtu.be/WcRtIpvjKNI
+
+; Become a Patron - https://patreon.com/8blit
+; 8blit Merch - https://8blit.myspreadshop.com/
+; Subscribe to 8Blit - https://www.youtube.com/8blit?sub_confirmation=1
+; Follow on Facebook - https://www.facebook.com/8Blit
+; Follow on Instagram - https://www.instagram.com/8blit
+; Visit the Website - https://www.8blit.com 
+
+; Email - 8blit0@gmail.com
+
+	processor 6502
+	include	 "vcs.h"
+
+BLUE            = $9a                   ; define a symbol to represent a TIA color value (NTSC)
+	
+	seg
+	org $f000
+	
+reset:
+; clear RAM and all TIA registers
+	ldx #0                              ; load the value 0 into (x)
+	lda #0                              ; load the value 0 into (a)
+clear:                                  ; define a label 
+	sta 0,x                             ; store the value in (a) into the address of 0 at offset (x)
+	inx                                 ; increase (x) by 1. it will count up to 255 and then rollover back to 0
+	bne clear                           ; branch up to the 'clear' label if (x) != 0
+
+	lda #BLUE                           ; load the value from the symbol 'blue' into (a)
+	sta COLUBK                          ; store (a) into the TIA background color register
+
+startFrame:
+; start of new frame
+; start of vertical blank processing
+	lda #0                              ; load the value 0 into (a)
+	sta VBLANK                          ; store (a) into the TIA VBLANK register
+	lda #2                              ; load the value 2 into (a). 
+	sta VSYNC                           ; store (a) into the TIA VSYNC register to turn on vertical sync
+	sta WSYNC                           ; write to the TIA WSYNC register to wait until horizontal sync (any value)
+;---------------------------------------
 	sta WSYNC
-	sta WSYNC
-	sta WSYNC               ; 3 scanlines of VSYNC signal
+;---------------------------------------
+	sta WSYNC                           ; we need 3 scanlines of VSYNC for a stable frame
+;---------------------------------------
 	lda #0
-	sta VSYNC
-;------------------------------------------------
-; 37 scanlines of vertical blank. . .
+	sta VSYNC                           ; store 0 into the TIA VSUNC register to turn off vertical sync
+
+; generate 37 scanlines of vertical blank
 	ldx #0
-VerticalBlank   
-	sta WSYNC
+verticalBlank:   
+	sta WSYNC                           ; write to the TIA WSYNC register to wait until horizontal sync (any value)
+;---------------------------------------	
 	inx
-	cpx #37
-	bne VerticalBlank
-;------------------------------------------------
-;192 lines of drawfield
-    ldx #0
-DrawField:
+	cpx #37                             ; compare the value in (x) to the immeadiate value of 37
+	bne verticalBlank                   ; branch up to the 'verticalBlank' label the compare is not equal
 
-        ;This will draw a blank background with the color you chose for
-        ;COLUBK
-
+; generate 192 lines of playfield
+	ldx #0
+playfield:
 	sta WSYNC
-        inx
-	cpx #192
-	bne DrawField
-;------------------------------------------------
-; end of screen - enter blanking
+;---------------------------------------
+	inx
+	cpx #192                            ; compare the value in (x) to the immeadiate value of 192
+	bne playfield                       ; branch up to the 'drawField' label the compare is not equal
+
+; end of playfield - turn on vertical blank
     lda #%01000010
     sta VBLANK          
-;------------------------------------------------
-; 30 scanlines of overscan. . .
+
+; generate 30 scanlines of overscan
 	ldx #0
-Overscan        
+overscan:        
 	sta WSYNC
+;---------------------------------------
 	inx
-	cpx #30
-	bne Overscan
-	jmp StartOfFrame
+	cpx #30                             ; compare the value in (x) to the immeadiate value of 30
+	bne overscan                        ; branch up to the 'overscan' label the compare is not equal
+	jmp startFrame                    ; frame is completed, branch back up to the 'startFrame' label
 ;------------------------------------------------
 
-	ORG $FFFA
+	org $fffa                           ; set origin to last 6 bytes of 4k rom
 	
-InterruptVectors
-	.word Reset          ; NMI
-	.word Reset          ; RESET
-	.word Reset          ; IRQ
+InterruptVectors:
+	.word reset                         ; nmi
+	.word reset                         ; reset
+	.word reset                         ; irq
 

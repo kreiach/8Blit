@@ -1,0 +1,18 @@
+--- Symbol List (sorted by symbol)
+BLUE                     00b2                  
+NTSC                     0001              (R )
+ORANGE                   0026                  
+OVERSCANLINES            0021              (R )
+OVERSCANTIME             0027                  
+PAL                      0002              (R )
+PAL_SECAM                0003              (R )
+PFSEGHEIGHT              001f                  
+RED                      0064                  
+REGION                   0003              (R )
+REGIONPARAM              0000 ????         (R )
+SECAM                    0004              (R )
+VBLANKLINES              0024              (R )
+VBLANKTIME               002a                  
+VOUTLINES                0078              (R )
+YELLOW                   001c                  
+--- End of Symbol List.

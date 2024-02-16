@@ -6,14 +6,15 @@
                                 ;
                                 ; This Episode on Youtube - https://youtu.be/z5OB81NpcGA
                                 ;
-                                ; Become a Patron - https://patreon.com/8blit
-                                ; Subscribe to 8Blit - https://www.youtube.com/8blit
-                                ; Follow on Facebook - https://www.facebook.com/8Blit
-                                ; Follow on Instagram - https://www.instagram.com/8blit
-                                ; Tweet on Twitter - https://twitter.com/8blit0
-                                ; Visit the Website - https://www.8blit.com    
-                                ;
-                                ; Email - 8blit0@gmail.com
+								; Become a Patron - https://patreon.com/8blit
+								; 8blit Merch - https://8blit.myspreadshop.com/
+								; Subscribe to 8Blit - https://www.youtube.com/8blit?sub_confirmation=1
+								; Follow on Facebook - https://www.facebook.com/8Blit
+								; Follow on Instagram - https://www.instagram.com/8blit
+								; Visit the Website - https://www.8blit.com 
+                   	            ;
+                       	        ; Email - 8blit0@gmail.com
+
                                 ;
                                 ; Portions of the code and the binary playfield files 
                                 ; were generated using Dithertron by http://8bitworkshop.com/dithertron
