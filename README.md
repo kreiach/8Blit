@@ -1,4 +1,4 @@
-# ATARI VCS/2600 Programming Tutorials
+# ATARI VCS/2600 Programming
 \
 Become a Patron - https://patreon.com/8blit \
 Subscribe to 8Blit - https://www.youtube.com/8blit \
