@@ -1,4 +1,4 @@
-; S03E05 Purrballs
+; S04E01 Purrballs
 
 ; Implementing a scoreboard in a game context
 

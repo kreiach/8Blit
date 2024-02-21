@@ -1,9 +1,8 @@
- ; S03E05 Score - Two Player Decimal Mode
+ ; S04E01 Score - Two Player
 
-; Demonstrates how to display two two-digit DECIMAL scores (0-99) using the 
-; split playfield. This example makes use of a digit data table to store the
-; patterns, multiplication, masking, pushing/pulling to/from the stack, and 
-; the sed/cld opcodes to enter and exit decimal mode
+; Demonstrates how to display two two-digit scores using the split playfield.
+; This example makes use of a digit data table to store the patterns, 
+; multiplication, masking, and pushing/pulling to/from the stack
 
 ; This Episode on Youtube - https://www.youtube.com/watch?v=lUJmDX1fd18
 
@@ -61,17 +60,9 @@ nextFrame:
 	bpl noInc           ; 2/3    should we update the score
 	lda #$10            ; 2      update every 1/6th second on NTSC
 	sta counter         ; 3
-
-	sed                 ; 2      set decimal mode
-	clc                 ; 2      clear carry flag
-	lda score           ; 3
-	adc #$1             ; 2      add 1
-	sta score           ; 3      update p0 score
-	clc                 ; 2      clear carry flag
-	lda score+1         ; 3
-	adc #$2             ; 2      add 2
-	sta score+1         ; 3      update p1 score
-	cld                 ; 2      clear decimal mode
+	inc score           ; 5      increase p0 score
+	inc score+1         ; 5      increase p1 score by 2
+	inc score+1         ; 5
 
 noInc:
 	VERTICAL_SYNC       ;10
@@ -171,7 +162,7 @@ voutscore:
 	nop                 ; 2
 	nop                 ; 2
 	nop                 ; 2
-	sta PF1             ; 3      40 write to pf1
+	sta PF1             ; 3   40 write to pf1
         
 contScore:
 	dec soutCount       ; 5      counting down 5 cycles at 2 scanlines per
@@ -224,3 +215,13 @@ osTimer
 	.word reset         ; nmi ($fffa)
 	.word reset         ; reset ($fffc)
 	.word reset         ; irq ($fffe)
+
+
+
+
+
+
+
+
+
+	
