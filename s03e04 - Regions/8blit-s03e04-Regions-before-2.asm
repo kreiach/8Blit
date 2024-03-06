@@ -5,12 +5,12 @@
                                 ;
                                 ; This Episode on Youtube - https://youtu.be/o9wz3pdFU6o
                                 ;
-								; Become a Patron - https://patreon.com/8blit
-								; 8blit Merch - https://8blit.myspreadshop.com/
-								; Subscribe to 8Blit - https://www.youtube.com/8blit?sub_confirmation=1
-								; Follow on Facebook - https://www.facebook.com/8Blit
-								; Follow on Instagram - https://www.instagram.com/8blit
-								; Visit the Website - https://www.8blit.com 
+                                ; Become a Patron - https://patreon.com/8blit
+                                ; 8blit Merch - https://8blit.myspreadshop.com/
+                                ; Subscribe to 8Blit - https://www.youtube.com/8blit?sub_confirmation=1
+                                ; Follow on Facebook - https://www.facebook.com/8Blit
+                                ; Follow on Instagram - https://www.instagram.com/8blit
+                                ; Visit the Website - https://www.8blit.com 
                    	            ;
                        	        ; Email - 8blit0@gmail.com
 
@@ -33,7 +33,7 @@ BLUE            = $a6
 ; define variables
 pf_segment      ds 1
 pf_segindex     ds 1
-b_y		        ds 2	 	    ; ball y pos
+b_y             ds 2            ; ball y pos
 b_bearing       ds 2            ; (0-15) 16 angles 22.5 deg apart
 b_bearing_old   ds 2            ; holds the original bearing (direction) of the ball before bounce
 collision_count ds 2            ; collision count
@@ -42,10 +42,10 @@ p_collision     ds 1            ; current players collision register value
 r_seed          ds 1            ; random seed
 snd_on          ds 2            ; 1 byte per audio channel - greater than 0 if sound is playing
 
-        seg	main    	        ; start of main segment
+        seg	main                ; start of main segment
         org     $F000
 
-reset:			
+reset:
         CLEAN_START	            ; ouput: all ram/registers 0
 
         ; generate a random seed from the interval timer
@@ -54,7 +54,7 @@ reset:
 
         ; set area values
         lda #%00010101          ; playfield to reflect (default behavior, not nessesary)
-        sta CTRLPF  
+        sta CTRLPF
         sta VDELP0              ; draw player 0 when player 1 is drawm
 
 soft_reset:
@@ -69,7 +69,7 @@ soft_reset:
 
         ; lock the graphic object positions
         sta WSYNC           
-        sta HMOVE	            ; strobe horizontal move to set fine positions  
+        sta HMOVE               ; strobe horizontal move to set fine positions  
 
         lda #0                  ; start on the first index of the current playfield segment to draw
         sta pf_segindex         
