@@ -26,6 +26,7 @@ s03e02 - How to add sound effects to your game\
 s03e03 - No example code\
 s03e04 - Programming for Different World Regions on the Atari 2600\
 s04e01 - Asymmetrical playfields, binary coded decimals, scoreboards\
+s04e02 - Reading the CX30 Paddle Controllers and the .byte $2c trick\
 Specials01 - Demonstrates an asymmetrical playfield\
 Specials03 - Christmas Yule Log with animated asymmetrical playfield
 
