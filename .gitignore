@@ -1,2 +1,4 @@
 # ignore any files in the bin folder - this would be compiled ROM files
 bin/
+*.sym
+*.lst

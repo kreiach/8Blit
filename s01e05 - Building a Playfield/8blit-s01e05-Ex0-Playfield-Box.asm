@@ -1,100 +1,105 @@
-				processor 6502			; s01e05 Ex0. Draw the playfield on an Atari 2600
-				include	 "vcs.h"		; This example uses the TIA PF0, PF1, PF2, and CTLRPF 
-										; Registers to draw a in the safe visual area of the screen, using the 
-                                       	; generally recommended number of VBLANK's
-                                        ;
-                                        ; This Episode on Youtube - https://youtu.be/LWIyHl9QfvQ
-                                        ;
-										; Become a Patron - https://patreon.com/8blit
-										; 8blit Merch - https://8blit.myspreadshop.com/
-										; Subscribe to 8Blit - https://www.youtube.com/8blit?sub_confirmation=1
-										; Follow on Facebook - https://www.facebook.com/8Blit
-										; Follow on Instagram - https://www.instagram.com/8blit
-										; Visit the Website - https://www.8blit.com 
-                                        ;
-                                        ; Email - 8blit0@gmail.com
+; s01e05 Ex0. Draw the playfield on an Atari 2600
 
-PFCOLOR 		equ 	#$A2
+; This example uses the TIA PF0, PF1, PF2, and CTLRPF
+; Registers to draw a in the safe visual area of the screen, using the
+; generally recommended number of VBLANK's
+;
+; This Episode on Youtube - https://youtu.be/LWIyHl9QfvQ
+;
+; Subscribe to 8Blit - https://www.youtube.com/8blit?sub_confirmation=1
+; Donate with PayPal - https://www.paypal.com/paypalme/8Blit
+; Become a Patron - https://patreon.com/8blit
+; 8blit Merch - https://8blit.myspreadshop.com
+; Follow on Facebook - https://www.facebook.com/8Blit
+; Follow on Instagram - https://www.instagram.com/8blit
+; Visit the Website - https://www.8blit.com
+;
+; Email - 8blit0@gmail.com
 
-				; ------------------------- Start of main segment ---------------------------------
+                 processor 6502
+                 include "vcs.h"
 
-				seg		main
-				org 	$F000
+PFCOLOR          equ #$A2
 
-				; ------------------------- Start of program execution ----------------------------
+                 ; ------------------------- Start of main segment ---------------------------------
 
-reset: 			ldx 	#0 				; Clear RAM and all TIA registers
-				lda 	#0 
-  
-clear:       	sta 	0,x 			; $0 to $7F (0-127) reserved OS page zero, $80 to $FF (128-255) user zero page ram.
-				inx 
-				bne 	clear
+                 seg main
+                 org $F000
 
-				lda 	#%00000001		; Set D0 to reflect the playfield
-				sta 	CTRLPF			; Apply to the CTRLPF register
+                 ; ------------------------- Start of program execution ----------------------------
 
-				lda		#PFCOLOR			
-				sta		COLUPF			; Set the PF color
+reset:           ldx #0                 ; Clear RAM and all TIA registers
+                 lda #0
 
-				; --------------------------- Begin main loop -------------------------------------
+clear:           sta 0,x                ; $0 to $7F (0-127) reserved OS page zero, $80 to $FF (128-255) user zero page ram.
+                 inx
+                 bne clear
 
-startframe:			; ------- 76543210 ---------- Bit order
-				lda 	#%00000010		; Writing a bit into the D1 vsync latch
-				sta 	VSYNC 
+                 lda #%00000001         ; Set D0 to reflect the playfield
+                 sta CTRLPF             ; Apply to the CTRLPF register
 
-				; --------------------------- 3 scanlines of VSYNC signal
-				sta 	WSYNC
-				sta 	WSYNC
-				sta 	WSYNC  
+                 lda #PFCOLOR
+                 sta COLUPF             ; Set the PF color
 
-				; --------------------------- Turn off VSYNC         	 
-				lda 	#0
-				sta	 	VSYNC
+                 ; --------------------------- Begin main loop -------------------------------------
 
-				; -------------------------- Additional 37 scanlines of vertical blank ------------
+startframe:      ; ------- 76543210 ---------- Bit order
+                 lda #%00000010         ; Writing a bit into the D1 vsync latch
+                 sta VSYNC
 
-				ldx 	#0 					
-lvblank:		sta 	WSYNC
-				inx
-				cpx 	#37				; 37 scanlines of vertical blank
-				bne 	lvblank
-				
-				; --------------------------- 192 lines of drawfield ------------------------------
+                 ; --------------------------- 3 scanlines of VSYNC signal
+                 sta WSYNC
+                 sta WSYNC
+                 sta WSYNC
 
-    			ldx 	#0 					
-drawfield:		lda		#%11111111		; Solid row of pixels for all PF# registers
-				sta 	PF0
-				sta		PF1
-				sta		PF2				
+                 ; --------------------------- Turn off VSYNC
+                 lda #0
+                 sta VSYNC
 
-        		sta 	WSYNC
-    			inx  
-				cpx 	#192
-				bne 	drawfield
+                 ; -------------------------- Additional 37 scanlines of vertical blank ------------
 
-				; -------------------------- 30 scanlines of overscan -----------------------------
-                lda     #%00000000
-                sta     PF0
-               	sta     PF1
-                sta     PF2
+                 ldx #0
+lvblank:         sta WSYNC
+                 inx
+                 cpx #37                ; 37 scanlines of vertical blank
+                 bne lvblank
 
-				ldx 	#0					
-overscan:       sta 	WSYNC
-				inx
-				cpx 	#30
-				bne 	overscan
+                 ; --------------------------- 192 lines of drawfield ------------------------------
 
-				; --------------------------- End of overscan -------------------------------------
+                 ldx #0
+drawfield:       lda #%11111111         ; Solid row of pixels for all PF# registers
+                 sta PF0
+                 sta PF1
+                 sta PF2
 
-				jmp 	startframe		; jump back up to start the next frame
+                 sta WSYNC
+                 inx
+                 cpx #192
+                 bne drawfield
 
-				; --------------------------- Pad until end of main segment -----------------------
+                 ; -------------------------- 30 scanlines of overscan -----------------------------
+                 lda #%00000000
+                 sta PF0
+                 sta PF1
+                 sta PF2
 
-				org 	$FFFA
-	
+                 ldx #0
+overscan:        sta WSYNC
+                 inx
+                 cpx #30
+                 bne overscan
+
+                 ; --------------------------- End of overscan -------------------------------------
+
+                 jmp startframe         ; jump back up to start the next frame
+
+                 ; --------------------------- Pad until end of main segment -----------------------
+
+                 org $FFFA
+
 irqvectors:
-				.word reset         	; NMI
-				.word reset         	; RESET
-				.word reset         	; IRQ
+                 .word reset            ; NMI
+                 .word reset            ; RESET
+                 .word reset            ; IRQ
 
-				; -------------------------- End of main segment ----------------------------------
+                 ; -------------------------- End of main segment ----------------------------------

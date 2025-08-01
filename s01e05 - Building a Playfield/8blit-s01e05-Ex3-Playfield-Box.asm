@@ -1,142 +1,147 @@
-				processor 6502			; s01e05  Ex4. Draw the playfield on an Atari 2600
-				include	 "vcs.h"		; This example uses the TIA PF0, PF1, PF2, and CTLRPF 
-										; Registers to draw a border around the screen. We're setting VBLANK on and off right before 
-										; and right after drawing the screen. This leave the portion of the screen that would not 
-										; display on most CRT empty, giving our border an even thickness all around when running in Stella.
-                                        ;
-                                        ; This Episode on Youtube - https://youtu.be/LWIyHl9QfvQ
-                                        ;
-										; Become a Patron - https://patreon.com/8blit
-										; 8blit Merch - https://8blit.myspreadshop.com/
-										; Subscribe to 8Blit - https://www.youtube.com/8blit?sub_confirmation=1
-										; Follow on Facebook - https://www.facebook.com/8Blit
-										; Follow on Instagram - https://www.instagram.com/8blit
-										; Visit the Website - https://www.8blit.com 
-                                        ;
-                                        ; Email - 8blit0@gmail.com
+; s01e05  Ex4. Draw the playfield on an Atari 2600
 
-BORDERCOLOR		equ 	#$9A			; We're using Two color mode for the playfield by setting D1 so this bordercolor wont even be used
-PLAYER0COLOR    equ		#$1E			; Left side of the screen
-PLAYER1COLOR   	equ		#$BA			; Right side of the screen
-BORDERHEIGHT	equ		#8				; How many scan lines are our top and bottom borders
-BACKGROUNDCOLOR	equ 	#$92
+; This example uses the TIA PF0, PF1, PF2, and CTLRPF
+; Registers to draw a border around the screen. We're setting VBLANK on and off right before
+; and right after drawing the screen. This leave the portion of the screen that would not
+; display on most CRT empty, giving our border an even thickness all around when running in Stella.
+;
+; This Episode on Youtube - https://youtu.be/LWIyHl9QfvQ
+;
+; Subscribe to 8Blit - https://www.youtube.com/8blit?sub_confirmation=1
+; Donate with PayPal - https://www.paypal.com/paypalme/8Blit
+; Become a Patron - https://patreon.com/8blit
+; 8blit Merch - https://8blit.myspreadshop.com
+; Follow on Facebook - https://www.facebook.com/8Blit
+; Follow on Instagram - https://www.instagram.com/8blit
+; Visit the Website - https://www.8blit.com
+;
+; Email - 8blit0@gmail.com
 
-				; ------------------------- Start of main segment ---------------------------------
+                 processor 6502
+                 include "vcs.h"
 
-				seg		main
-				org 	$F000
+BORDERCOLOR      equ #$9A               ; We're using Two color mode for the playfield by setting D1 so this bordercolor wont even be used
+PLAYER0COLOR     equ #$1E               ; Left side of the screen
+PLAYER1COLOR     equ #$BA               ; Right side of the screen
+BORDERHEIGHT     equ #8                 ; How many scan lines are our top and bottom borders
+BACKGROUNDCOLOR  equ #$92
 
-				; ------------------------- Start of program execution ----------------------------
+                 ; ------------------------- Start of main segment ---------------------------------
 
-reset: 			ldx 	#0 				; Clear RAM and all TIA registers
-				lda 	#0 
-  
-clear:       	sta 	0,x 			; $0 to $7F (0-127) reserved OS page zero, $80 to $FF (128-255) user zero page ram.
-				inx 
-				bne 	clear
+                 seg main
+                 org $F000
 
-				lda		#PLAYER0COLOR
-				sta		COLUP0
+                 ; ------------------------- Start of program execution ----------------------------
 
-				lda		#PLAYER1COLOR
-				sta		COLUP1
+reset:           ldx #0                 ; Clear RAM and all TIA registers
+                 lda #0
 
-				lda		#%00000011		; Set D0 to reflect the playfield, and D1 for Two color
-				sta		CTRLPF			; Apply to the CTRLPF register
+clear:           sta 0,x                ; $0 to $7F (0-127) reserved OS page zero, $80 to $FF (128-255) user zero page ram.
+                 inx
+                 bne clear
 
-				lda		#BORDERCOLOR			
-				sta		COLUPF			; Set the PF color
+                 lda #PLAYER0COLOR
+                 sta COLUP0
 
-				lda		#BACKGROUNDCOLOR
-				sta		COLUBK
+                 lda #PLAYER1COLOR
+                 sta COLUP1
 
-				; --------------------------- Begin main loop -------------------------------------
+                 lda #%00000011         ; Set D0 to reflect the playfield, and D1 for Two color
+                 sta CTRLPF             ; Apply to the CTRLPF register
 
-startframe:		; ------- 76543210 ---------- Bit order
-				lda 	#%00000010		; Writing a bit into the D1 vsync latch
-				sta 	VSYNC 
+                 lda #BORDERCOLOR
+                 sta COLUPF             ; Set the PF color
 
-				; --------------------------- 3 scanlines of VSYNC signal
-				sta 	WSYNC
-				sta 	WSYNC
-				sta 	WSYNC  
+                 lda #BACKGROUNDCOLOR
+                 sta COLUBK
 
-				; --------------------------- Turn off VSYNC         	 
-				lda 	#0
-				sta		VSYNC
+                 ; --------------------------- Begin main loop -------------------------------------
 
-				; -------------------------- Additional 37 scanlines of vertical blank ------------
+startframe:      ; ------- 76543210 ---------- Bit order
+                 lda #%00000010         ; Writing a bit into the D1 vsync latch
+                 sta VSYNC
+
+                 ; --------------------------- 3 scanlines of VSYNC signal
+                 sta WSYNC
+                 sta WSYNC
+                 sta WSYNC
+
+                 ; --------------------------- Turn off VSYNC
+                 lda #0
+                 sta VSYNC
+
+                 ; -------------------------- Additional 37 scanlines of vertical blank ------------
 
 
-				lda     #%11111111		; Solid line of pixels
-				sta     PF0				; Set them in all the PF# registers
-				sta 	PF1
-				sta     PF2	
+                 lda #%11111111         ; Solid line of pixels
+                 sta PF0                ; Set them in all the PF# registers
+                 sta PF1
+                 sta PF2
 
-				ldx 	#0 					
-				lda 	#0
-lvblank:		sta 	WSYNC
-				inx
-				cpx 	#37				; 37 scanlines of vertical blank
-				bne 	lvblank
-		
-				lda 	#0				; Start of new frame
-				sta 	VBLANK			; Start of vertical blank processing
+                 ldx #0
+                 lda #0
+lvblank:         sta WSYNC
+                 inx
+                 cpx #37                ; 37 scanlines of vertical blank
+                 bne lvblank
 
-				; --------------------------- 192 lines of drawfield ------------------------------
+                 lda #0                 ; Start of new frame
+                 sta VBLANK             ; Start of vertical blank processing
 
-    			ldx 	#0 					
-drawfield:		cpx		#BORDERHEIGHT	 	 
-				beq		borderwalls
+                 ; --------------------------- 192 lines of drawfield ------------------------------
 
-				cpx 	#192-BORDERHEIGHT ; will be interpreted by the assembler
-				beq		borderbottom
+                 ldx #0
+drawfield:       cpx #BORDERHEIGHT
+                 beq borderwalls
 
-				jmp 	borderdone
+                 cpx #192-BORDERHEIGHT  ; will be interpreted by the assembler
+                 beq borderbottom
 
-borderbottom:  			lda	#%11111111	; Solid row of pixels for all PF# registers
-				sta 	PF0
-				sta		PF1
-				sta     PF2					
+                 jmp borderdone
 
-				jmp 	borderdone
+borderbottom:    lda #%11111111         ; Solid row of pixels for all PF# registers
+                 sta PF0
+                 sta PF1
+                 sta PF2
 
-borderwalls:	lda     #%00010000		; Set the first pixel of PF0. Uses the 4 hight bits and rendered in reverse.
-				sta     PF0				; Set PF0 register
-				lda		#%00000000		; Clear the PF1-2 registers to have an empty middle
-				sta 	PF1
-				sta     PF2	
+                 jmp borderdone
 
-borderdone:		sta 	WSYNC
-    			inx  
-				cpx 	#192
-				bne 	drawfield
+borderwalls:     lda #%00010000         ; Set the first pixel of PF0. Uses the 4 hight bits and rendered in reverse.
+                 sta PF0                ; Set PF0 register
+                 lda #%00000000         ; Clear the PF1-2 registers to have an empty middle
+                 sta PF1
+                 sta PF2
 
-				; --------------------------- End of screen - enter blanking ----------------------
+borderdone:      sta WSYNC
+                 inx
+                 cpx #192
+                 bne drawfield
 
-				; ------- 76543210 ---------- Bit order
-    			lda 	#%01000010 		; Set D0, D6 of vblank register
-    			sta 	VBLANK				    
+                 ; --------------------------- End of screen - enter blanking ----------------------
 
-				; -------------------------- 30 scanlines of overscan -----------------------------
+                 ; ------- 76543210 ---------- Bit order
+                 lda #%01000010         ; Set D0, D6 of vblank register
+                 sta VBLANK
 
-				ldx 	#0					
-overscan:       sta 	WSYNC
-				inx
-				cpx 	#30
-				bne 	overscan
+                 ; -------------------------- 30 scanlines of overscan -----------------------------
 
-				; --------------------------- End of overscan -------------------------------------
+                 ldx #0
+overscan:        sta WSYNC
+                 inx
+                 cpx #30
+                 bne overscan
 
-				jmp 	startframe		; jump back up to start the next frame
+                 ; --------------------------- End of overscan -------------------------------------
 
-				; --------------------------- Pad until end of main segment -----------------------
+                 jmp startframe         ; jump back up to start the next frame
 
-				org 	$FFFA
-	
+                 ; --------------------------- Pad until end of main segment -----------------------
+
+                 org $FFFA
+
 irqvectors:
-				.word reset          	; NMI
-				.word reset          	; RESET
-				.word reset          	; IRQ
+                 .word reset            ; NMI
+                 .word reset            ; RESET
+                 .word reset            ; IRQ
 
-				; -------------------------- End of main segment ----------------------------------
+                 ; -------------------------- End of main segment ----------------------------------

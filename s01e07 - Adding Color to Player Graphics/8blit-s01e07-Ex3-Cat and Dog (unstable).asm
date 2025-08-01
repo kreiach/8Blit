@@ -1,4 +1,4 @@
-; s01e07 Ex4. Unstable relationship 2
+; s01e07 Ex3. Unstable relationship
 ;
 ; Draw a colorful cat and dog, but it's unstable
 ;
@@ -64,9 +64,6 @@ reset:           CLEAN_START            ; macro included in macro.h file
                  ldx #1                 ; (2) x = object 0-1 player, 2-3 missiles, 4 ball
                  jsr pos_x              ; (6) set the initial course position of the player 1 graphic
 
-                 lda #%00000001         ; (2) or could be #1
-                 sta VDELP0             ; (3) Delay player 0 (GRP0 until writing to GRP1)
-
 nextframe:       VERTICAL_SYNC          ; macro included in macro.h file
 
                  ldx #vb_h              ; (2)
@@ -92,14 +89,14 @@ kernel:
                  lda #cat_h             ; (2) load height of sprite
                  sec                    ; (2) set carry flag
                  isb tp0_y              ; (5) increase tp0_y subtract accumulator
-                 bcs draw_p0            ; (2/3)
+                 bcs draw_p0            ; (3)
                  lda #0                 ; (2)
 draw_p0:
                  tay                    ; (2)
                  lda cat_col,y          ; (4)
-                 tax                    ; (2)
+                 sta colup0             ; (3)
                  lda cat_a,y            ; (4)
-                 sta GRP0               ; (3) Delayed by VDELP0 so it wont be written until GRP1
+                 tax                    ; (3)
 
                  lda #dog_h             ; (2) load height of sprite
                  sec                    ; (2) set carry flag
@@ -112,20 +109,20 @@ draw_p1:
                  sta colup1             ; (3)
                  lda dog_a,y            ; (4)
 
-                 sta WSYNC              ; (3) disable this line, and enable the second sta COLUP1 to stablize the screen
+                 ldy colup0             ; (2)
+                 ;59
+                 sta WSYNC              ; (3)
+                 stx GRP0               ; (3)
                  sta GRP1               ; (3)
-                 stx COLUP0             ; (3)
+                 sty COLUP0             ; (3)
                  lda colup1             ; (2)
                  sta COLUP1             ; (3)
-                 ;sta     COLUP1
-
 
                  dec scanline           ; (5)
                  bne kernel             ; (2/3)
 
-
                  sta WSYNC              ; (3)
-
+                 ;94
                  lda #%00000010         ; set D1 = 1 to initiate VBLANK
                  sta VBLANK             ; turn off the beam
                  ldx #os_h              ; (2)
@@ -196,7 +193,7 @@ dog_a            ; 11 bytes
 
 ; dog color bottom->top
 dog_col          .byte #0               ; 11 bytes
-                 .byte #$0E
+                 .byte #$F2
                  .byte #$F4
                  .byte #$F4
                  .byte #$F4
@@ -204,7 +201,7 @@ dog_col          .byte #0               ; 11 bytes
                  .byte #$F4
                  .byte #$F4
                  .byte #$F4
-                 .byte #$F4
+                 .byte #$F2
                  .byte #$0E
 
                  org $FFFA
