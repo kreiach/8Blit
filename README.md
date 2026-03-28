@@ -1,11 +1,10 @@
 # ATARI VCS/2600 Programming
 \
-Subscribe to 8Blit - https://www.youtube.com/8blit?sub_confirmation=1 \
-Donate with PayPal - https://www.paypal.com/paypalme/8Blit \
 Become a Patron - https://patreon.com/8blit \
+Subscribe to 8Blit - https://www.youtube.com/8blit?sub_confirmation=1 \
 8blit Merch - https://8blit.myspreadshop.com \
-Follow on Facebook - https://www.facebook.com/8Blit \
-Follow on Instagram - https://www.instagram.com/8blit \
+Join us on Discord - https://discord.gg/KD3ff9qMR7 \
+Donate with PayPal - https://www.paypal.com/paypalme/8Blit \
 Visit the Website - https://www.8blit.com \
 \
 Email - 8blit0@gmail.com\
@@ -31,6 +30,7 @@ s04e01 - Asymmetrical playfields, binary coded decimals, scoreboards\
 s04e02 - Reading the CX30 Paddle Controllers and the .byte $2c trick\
 s05e01 - The Atari XG-1 Light Gun\
 s05e03 - Keyboard Controllers, Video Touch Pad\
+s06e01 - Graphic Data Structures\
 Specials01 - Demonstrates an asymmetrical playfield\
 Specials03 - Christmas Yule Log with animated asymmetrical playfield
 
